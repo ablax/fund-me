@@ -10,10 +10,11 @@ error FundMe__NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
 
+    // State Variables
+    mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
     uint256 public constant MINIMUM_USD = 5e18;
     address private immutable i_owner;
     address[] private s_funders;
-    mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
     AggregatorV3Interface private s_priceFeed;
 
     constructor(address priceFeed) {
@@ -28,7 +29,8 @@ contract FundMe {
     }
 
     function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
+        uint256 fundersLen = s_funders.length;
+        for (uint256 funderIndex = 0; funderIndex < fundersLen; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
